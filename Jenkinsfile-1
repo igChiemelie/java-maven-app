@@ -57,9 +57,18 @@ pipeline {
         }
       
         stage('deploy') {
+            // input variable and parameters can be used to get user input during the pipeline execution. In this case, we are asking the user to select the environment to deploy to.
+            input{
+                message "Select the env to deploy to"
+                ok "Done"
+                parameters{
+                    choice(name:'ENV', choices: ['dev', 'staging', 'prod'], description: '')
+                }
+            }
             steps {
                 script{
                     gv.deployApp()
+                    echo "Deploying to ${ENV} environment"
                 }
             }
         }
