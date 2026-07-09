@@ -34,11 +34,11 @@ pipeline {
         }
 
         stage('test app') {
-            when {
-                expression{
-                    BRANCH_NAME == 'main' || BRANCH_NAME == 'master'
-                }
-            }
+            // when {
+            //     expression{
+            //         env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'master'
+            //     }
+            // }
             steps {
                 echo 'testing the application...'
                 
