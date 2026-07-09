@@ -1,68 +1,39 @@
-//18.35 timestamp | 8.10
-def gv
-
 pipeline {
     agent any
-    // env variables can be defined here and will be available to all stages
-    environment {
-        NEW_VERSION = '1.3.0'
+
+    tools{
+        maven 'maven-3.9'
     }
 
-    // tools block is used to define the tools that will be used in the pipeline. In this case, we are using Maven as the build tool.
-    // tools{
-    //     maven 'maven-3.9'
-    // }
 
-    parameters{
-        choice(name:'VERSION', choices: ['1.1.0', '2.1.0'], description: '')
-        booleanParam(name: 'executeTests', defaultValue: true, description: 'Are there code changes?')
-    }
     stages {
-        stage('init'){
-            steps{
-                script{
-                    gv = load "script.groovy"
-                }
-            }
-        }
-        stage('build app') {
-            // when {
-            //     expression{
-            //         BRANCH_NAME == 'main' && CODE_CHANGES == true
-            //     }
-            // }
-            when {
-                expression{
-                    params.executeTests == true
-                }
-            }
+        stage('build jar') {
             steps {
                 script{
-                    gv.buildApp()
+                    echo "Building the application..."
+                    sh "mvn package"
                 }
             }
         }
 
-        stage('test app') {
-            // when {
-            //     expression{
-            //         env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'master'
-            //     }
-            // }
+        stage('build image') {
             steps {
                 script{
-                    gv.testApp()
+                    echo "Building the docker image..."
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+                        sh 'docker build -t emeliechukwu/demo-app:jma-2.0 .'
+                        sh 'echo $PASS | docker login -u $USER --password-stdin'
+                        sh 'docker push emeliechukwu/demo-app:jma-2.0'
+                    }
                 }
             }
         }
+
       
         stage('deploy') {
             steps {
                 script{
-                     // input variable and parameters can be used to get user input during the pipeline execution. In this case, we are asking the user to select the environment to deploy to.
-                    env.ENV = input message: "Select the environment to deploy to", ok: "Done", parameters: [choice(name:'ONE', choices: ['dev', 'staging', 'prod'], description: '')]
-                    gv.deployApp()
-                    echo "Deploying to ${ENV} environment"
+                    echo "Deploying the application..."
                 }
             }
         }
