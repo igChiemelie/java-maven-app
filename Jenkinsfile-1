@@ -1,18 +1,47 @@
 pipeline {
     agent any
+    // env variables can be defined here and will be available to all stages
+    environment {
+        NEW_VERSION = '1.3.0'
+    }
 
+    // tools block is used to define the tools that will be used in the pipeline. In this case, we are using Maven as the build tool.
+    // tools{
+    //     maven 'maven-3.9'
+    // }
+
+    parameters{
+        choice(name:'VERSION', choices: ['1.1.0', '2.1.0'], description: '')
+        booleanParam(name: 'executeTests', defaultValue: true, description: 'Are there code changes?')
+    }
     stages {
-     
         stage('build app') {
+            // when {
+            //     expression{
+            //         BRANCH_NAME == 'main' && CODE_CHANGES == true
+            //     }
+            // }
+            when {
+                expression{
+                    params.executeTests == true
+                }
+            }
             steps {
                 echo 'building the application...'
+                echo "building version ${NEW_VERSION}..."
                 
             }
         }
 
         stage('test app') {
+            when {
+                expression{
+                    BRANCH_NAME == 'main' || BRANCH_NAME == 'master'
+                }
+            }
             steps {
                 echo 'testing the application...'
+                
                 
             }
         }
@@ -20,6 +49,7 @@ pipeline {
         stage('deploy') {
             steps {
                 echo 'deploying docker image...'
+                echo "deploying version ${params.VERSION}..."
                
             }
         }
