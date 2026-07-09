@@ -1,3 +1,6 @@
+//18.35 timestamp | 8.10
+def gv
+
 pipeline {
     agent any
     // env variables can be defined here and will be available to all stages
@@ -15,6 +18,13 @@ pipeline {
         booleanParam(name: 'executeTests', defaultValue: true, description: 'Are there code changes?')
     }
     stages {
+        stage('init'){
+            steps{
+                script{
+                    gv = load "script.groovy"
+                }
+            }
+        }
         stage('build app') {
             // when {
             //     expression{
@@ -27,9 +37,9 @@ pipeline {
                 }
             }
             steps {
-                echo 'building the application...'
-                echo "building version ${NEW_VERSION}..."
-                
+                script{
+                    gv.buildApp()
+                }
             }
         }
 
@@ -40,17 +50,17 @@ pipeline {
             //     }
             // }
             steps {
-                echo 'testing the application...'
-                
-                
+                script{
+                    gv.testApp()
+                }
             }
         }
       
         stage('deploy') {
             steps {
-                echo 'deploying docker image...'
-                echo "deploying version ${params.VERSION}..."
-               
+                script{
+                    gv.deployApp()
+                }
             }
         }
        
