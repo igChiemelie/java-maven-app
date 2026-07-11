@@ -5,7 +5,7 @@ pipeline {
         stage('test') {
             steps {
                 script{
-                    echo "Testing the multi pipeline webhook url integration..."
+                    echo "Testing the multi-branch pipeline webhook url integration..."
                     echo "Executing pipeline on branch: ${BRANCH_NAME}"
                 }
             }
