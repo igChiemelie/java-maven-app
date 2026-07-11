@@ -31,9 +31,8 @@ pipeline {
         stage("build image") {
             steps {
                 script {
-                    echo "building image"
                     //gv.buildImage()
-                    buildImage()
+                    buildImage 'emeliechukwu/demo-app:jma-3.0'
                 }
             }
         }
