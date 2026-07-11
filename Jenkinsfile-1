@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script {
                     echo "building jar"
-                    echo "Testing the integration....."
+                    echo "Testing the webhook integration....."
                     //gv.buildJar()
 
                     // using shared library function by referencing the filename
