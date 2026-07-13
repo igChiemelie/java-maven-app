@@ -6,14 +6,15 @@
 //    [$class: 'GitSCMSource',
 //    remote: 'https://github.com/igChiemelie/java-maven-app.git',
 //    credentialsId: 'github-credentials'])
-    
+
+
 def gv
 
 pipeline {
     agent any
 
     tools {
-        maven 'maven-3.9'
+        maven 'Maven'
     }
 
     stages {
