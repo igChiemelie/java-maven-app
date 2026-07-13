@@ -7,7 +7,7 @@
 //    remote: 'https://github.com/igChiemelie/java-maven-app.git',
 //    credentialsId: 'github-credentials'])
 
-//let test the multibranch pipeline again and see if it will trigger on automatic push to github repo
+//Let test again the multibranch pipeline again and see if it will trigger on automatic push to github repo
 
 def gv
 
